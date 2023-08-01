@@ -1,7 +1,7 @@
 use std::ops::Range;
 #[cfg(feature = "download")]
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::Arc;
 
 use chrono::{DateTime, Utc};
@@ -60,7 +60,7 @@ pub struct Stream {
     pub bitrate: Option<u64>,
     pub color_info: Option<ColorInfo>,
     #[derivative(PartialEq(compare_with = "atomic_u64_is_eq"))]
-    content_length: Arc<AtomicU64>,
+    content_length: Arc<AtomicU32>,
     pub fps: u8,
     pub height: Option<u64>,
     pub high_replication: Option<bool>,
@@ -109,7 +109,7 @@ impl Stream {
             average_bitrate: raw_format.average_bitrate,
             bitrate: raw_format.bitrate,
             color_info: raw_format.color_info,
-            content_length: Arc::new(AtomicU64::new(raw_format.content_length.unwrap_or(0))),
+            content_length: Arc::new(AtomicU32::new(raw_format.content_length.unwrap_or(0))),
             fps: raw_format.fps,
             height: raw_format.height,
             high_replication: raw_format.high_replication,
@@ -484,6 +484,6 @@ fn is_progressive(codecs: &[String]) -> bool {
 }
 
 #[inline]
-fn atomic_u64_is_eq(lhs: &Arc<AtomicU64>, rhs: &Arc<AtomicU64>) -> bool {
+fn atomic_u64_is_eq(lhs: &Arc<AtomicU32>, rhs: &Arc<AtomicU32>) -> bool {
     lhs.load(Ordering::Acquire) == rhs.load(Ordering::Acquire)
 }
